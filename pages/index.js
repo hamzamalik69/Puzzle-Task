@@ -1,12 +1,10 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-
   const [num, setNum] = useState(0);
   const [arr, setArr] = useState([]);
-
 
   const dragItem = useRef();
   const dragOverItem = useRef();
@@ -28,26 +26,46 @@ export default function Home() {
     copyListItems.splice(dragOverItem.current, 0, dragItemContent);
     dragItem.current = null;
     dragOverItem.current = null;
+
     setArr(copyListItems);
-    
-  };
 
+    setTimeout(() => {
+      let welcome = copyListItems.filter((item, index) => {
+        if (item.id !== index + 1) {
+          return
+        } else {
+          return item
+        }
+      })
+      if (welcome.length == copyListItems.length) {
+        alert("Welcome to the team");
+      }
+    }, 500)
+  }
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setNum(event.target.value);
-    console.log('value is:', event.target.value);
+    console.log("value is:", event.target.value);
   };
 
-  const handleClick = event => {
-    event.preventDefault()
+  const handleClick = (event) => {
+    event.preventDefault();
     const item = new Array(parseInt(num * num)).fill(0).map((item, idx) => {
       return {
-        id: Math.floor(Math.random() * (num * num - 1 + 1)) + 1
-      }
-    })
-    setArr([...item])
+        id: idx+1
+      };
+    });
+    let itemTwo = item.map((number, idx) => {
+      return {
+        id:number.id, sort:Math.random()
+      };
+    }).sort(function(a, b){return a.sort - b.sort});
+    console.log(itemTwo)
+    setArr([...itemTwo]);
+
     console.log(num);
   };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -56,23 +74,52 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className='text-4xl font-bold leading-none py-10 text-center'>Grid Puzzle</h1>
-      <form onSubmit={(e) => {
-        handleClick(e)
-      }} className='w-full flex flex-row gap-4 justify-center items-center p-10 border border-slate-300 rounded-lg bg-slate-50'>
-        <p className='text-xl font-medium leading-none text-slate-900'>Enter the required grid length:</p>
-        <input type={`text`} onChange={(e) => setNum(e.target.value)} id='num' className='py-2 px-4 w-[400px] rounded-lg border border-slate-300' placeholder='Enter a number' />
-        <button type='submit' className='bg-blue-700 text-white py-2 px-6 rounded-lg f-f-m'>Enter</button>
+      <h1 className="text-4xl font-bold leading-none py-10 text-center">
+        Grid Puzzle
+      </h1>
+      <form
+        onSubmit={(e) => {
+          handleClick(e);
+        }}
+        className="w-full flex flex-row gap-4 justify-center items-center p-10 border border-slate-300 rounded-lg bg-slate-50"
+      >
+        <p className="text-xl font-medium leading-none text-slate-900">
+          Enter the required grid length:
+        </p>
+        <input
+          type={`text`}
+          onChange={(e) => setNum(e.target.value)}
+          id="num"
+          className="py-2 px-4 w-[400px] rounded-lg border border-slate-300"
+          placeholder="Enter a number"
+        />
+        <button
+          type="submit"
+          className="bg-blue-700 text-white py-2 px-6 rounded-lg f-f-m"
+        >
+          Enter
+        </button>
       </form>
-      <div style={{ gridTemplateColumns: `repeat(${num},minmax(0,1fr))` }} className={`grid`}>
+      <div
+        style={{ gridTemplateColumns: `repeat(${num},minmax(0,1fr))` }}
+        className={`grid`}
+      >
         {arr &&
           arr.map((item, idx) => {
-            return <div draggable="true" className='cursor-move py-16 gap-3 text-center mt-10 mr-4 text-2xl font-bold bg-slate-200 rounded border border-slate-600' onDragStart={(e) => dragStart(e, idx)}
-              onDragEnter={(e) => dragEnter(e, idx)}
-              onDragEnd={drop} key={idx}>{item.id}</div>
-          })
-        }
+            return (
+              <div
+                draggable="true"
+                className="cursor-move py-16 gap-3 text-center mt-10 mr-4 text-2xl font-bold bg-slate-200 rounded border border-slate-600"
+                onDragStart={(e) => dragStart(e, idx)}
+                onDragEnter={(e) => dragEnter(e, idx)}
+                onDragEnd={drop}
+                key={idx}
+              >
+                {item.id}
+              </div>
+            );
+          })}
       </div>
     </div>
-  )
+  );
 }
