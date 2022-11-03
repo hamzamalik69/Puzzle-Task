@@ -1,6 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link"
 
 export default function Home() {
   const [num, setNum] = useState(0);
@@ -95,10 +96,19 @@ export default function Home() {
         />
         <canvas id="canvas" ref={canvasRef}></canvas>
       </div> */}
+      <div className="flex w-[57%] justify-between float-right items-center">
+        <h1 className="text-4xl font-bold leading-none py-10 text-center">
+          Grid Puzzle
+        </h1>
+        <div className="float-right">
 
-      <h1 className="text-4xl font-bold leading-none py-10 text-center">
-        Grid Puzzle
-      </h1>
+          <Link href={`/puzzle`}>
+            <button className="relative py-3 pr-6 rounded-lg bg-green-400 text-black border border-green-500 w-[200px] float-right">Next Puzzle</button>
+            <img src="./assets/next.png" className="w-[20px] h-[20px] absolute right-[53px] top-[3rem]" />
+          </Link>
+        </div>
+
+      </div>
       <form
         onSubmit={(e) => {
           handleClick(e);
@@ -131,7 +141,8 @@ export default function Home() {
             return (
               <div
                 draggable="true"
-                className="cursor-move py-16 gap-3 text-center mt-10 mr-4 text-2xl font-bold bg-slate-200 rounded border border-slate-600"
+                className="cursor-move py-16 gap-3 text-center mt-10 mr-4 text
+                -2xl font-bold bg-slate-200 rounded border border-slate-600"
                 onDragStart={(e) => dragStart(e, idx)}
                 onDragEnter={(e) => dragEnter(e, idx)}
                 onDragEnd={drop}
