@@ -1,6 +1,8 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import Router, { useRouter } from "next/router";
 
 export default function Home() {
   const [can, setCan] = useState();
@@ -21,13 +23,32 @@ export default function Home() {
     let currentDropPiece;
     let mouse;
     img.addEventListener("load", onImage, false);
-    img.src = "https://external-preview.redd.it/GZf1OJHNxY0fxShKsxeDXK0bVrzw5S1QCN_jt2kEkrE.png?format=pjpg&auto=webp&s=36552f92a5caf2f5a920aa3df3ac97947793a717";
+
+    function randomImg() {
+      let arrayImg = [
+        "https://imgv3.fotor.com/images/blog-richtext-image/disaster-girl-meme.jpg",
+
+        "https://external-preview.redd.it/GZf1OJHNxY0fxShKsxeDXK0bVrzw5S1QCN_jt2kEkrE.png?format=pjpg&auto=webp&s=36552f92a5caf2f5a920aa3df3ac97947793a717",
+
+        "https://i.seadn.io/gae/dQDxqBW3xILelRihCPrFdUgLHAID9EDTWYwjCNh6Fi28pRX26ripTPxelXkD44KUmS2REHtL9_y2RRw4gWYeR5KdKqh8KoP-wc6aUMA?auto=format&w=1000",
+
+        "https://a.pinatafarm.com/329x427/8fb12d9451/neck-vein-guy.jpg",
+
+        "https://nyc3.digitaloceanspaces.com/memecreator-cdn/media/__processed__/cd4/template-is-this-a-pigeon-0c6db91aec9c.jpg",
+
+        "https://i0.wp.com/comicsandmemes.com/wp-content/uploads/blank-meme-template-mike-wazowski-steve-carell.png?resize=639%2C361&ssl=1",
+      ];
+
+      return arrayImg[parseInt(Math.random() * 5)];
+    }
+
+    img.src = randomImg();
 
     function initPuzzle() {
       pieces = [];
       mouse = {
         x: 0,
-        y: 0
+        y: 0,
       };
       currentPiece = null;
       currentDropPiece = null;
@@ -257,7 +278,7 @@ export default function Home() {
       if (currentDropPiece !== null) {
         let tmp = {
           xPos: currentPiece.xPos,
-          yPos: currentPiece.yPos
+          yPos: currentPiece.yPos,
         };
         currentPiece.xPos = currentDropPiece.xPos;
         currentPiece.yPos = currentDropPiece.yPos;
@@ -290,7 +311,7 @@ export default function Home() {
       if (gameWin) {
         setTimeout(gameOver, 500);
         setIsActive(false);
-      
+        document.getElementById("prompt").classList.toggle("hidden");
       }
     }
 
@@ -314,11 +335,8 @@ export default function Home() {
     document.querySelector("#size").oninput = updateSize;
   }, []);
 
-
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
-
- 
 
   function toggle() {
     setIsActive(!isActive);
@@ -327,7 +345,6 @@ export default function Home() {
 
     const startTime = document.getElementById("str");
     startTime.style.opacity = 0;
-    
   }
 
   function reset() {
@@ -339,7 +356,7 @@ export default function Home() {
     let interval = null;
     if (isActive) {
       interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
+        setSeconds((seconds) => seconds + 1);
       }, 1000);
     } else if (!isActive && seconds !== 0) {
       clearInterval(interval);
@@ -347,29 +364,69 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [isActive, seconds]);
 
-
-
-
-
   return (
-    <div className={styles.container}>
+    <div className={`styles.container`}>
       <Head>
         <title>Image Puzzle</title>
         <link rel="icon" href="/favicon.png" />
       </Head>
       <div className="flex flex-col justify-center items-center gap-3 pt-10">
-        <h1 className="text-3xl font-bold leading-none text-center mb-4">Enter a Number between 2-6</h1>
-        <input type={`text`} placeholder={`Enter a number`} className={`py-3 px-8 border border-slate-800 rounded-lg w-[400px]`} id="size" />
+        <h1
+          className="text-3xl font-bold leading-none text-center mb-4
+"
+        >
+          Enter a Number between 2-6
+        </h1>
+        <input
+          type={`text`}
+          placeholder={`Enter a number`}
+          className={`py-3 px-8 border border-slate-800 rounded-lg w-[400px]`}
+          id="size"
+        />
         <canvas id="canvas"></canvas>
 
-
         <div className="relative">
-          <button id="str" className="text-white opacity-100 text-lg font-medium bg-green-700 rounded py-3 px-10 mt-10 border border-green-900" onClick={toggle}>START</button>
-          <div id="timer" className="absolute top-10 hidden left-5 py-3 px-10  bg-slate-400 border-slate-800 w-[100px] text-xl font-bold rounded-lg">
+          <div className="flex flex-row justify-center items-center mt-3 gap-3">
+            <button
+              id="str"
+              className="text-white opacity-100 text-lg font-medium bg-green-700 rounded py-3 px-10 border border-green-900"
+              onClick={toggle}
+            >
+              START
+            </button>
+
+            <button
+              className="bg-blue-400 py-[14px] ml-4 px-6 rounded border border-blue-600 text-base font-bold"
+              onClick={() => {
+                Router.reload("/puzzle");
+              }}
+            >
+              Try a different Picture
+            </button>
+          </div>
+          <div
+            id="timer"
+            className="absolute top-3 hidden left-5 py-[14px] px-10  bg-slate-400 border-slate-800 w-[100px] text-xl font-bold rounded-lg"
+          >
             {seconds}s
           </div>
         </div>
-
+        <div
+          id="prompt"
+          className="absolute hidden text-2xl text-center flex-col gap-4 flex justify-center items-center bg-green-400 w-[900px] h-[300px] rounded-lg border border-slate-700 opacity-100"
+        >
+          <span className={`font-bold`}> Welcome to The AK's Team </span>{" "}
+          <br></br>
+          You solved the puzzle in {seconds} seconds
+          <button
+            className="bg-red-400 py-3 px-6 rounded-lg border border-red-700 text-base font-bold"
+            onClick={() => {
+              Router.reload("/puzzle");
+            }}
+          >
+            Play Again
+          </button>
+        </div>
       </div>
     </div>
   );
