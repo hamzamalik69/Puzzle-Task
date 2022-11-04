@@ -42,7 +42,7 @@ export default function Home() {
         puzzleWidth,
         puzzleHeight
       );
-      createTitle("Create Puzzle");
+      // createTitle("START");
       buildPieces();
     }
 
@@ -61,17 +61,18 @@ export default function Home() {
       initPuzzle();
     }
 
-    function createTitle(msg) {
-      stage.fillStyle = "#000000";
-      stage.globalAlpha = 0.4;
-      stage.fillRect(100, puzzleHeight - 40, puzzleWidth - 200, 40);
-      stage.fillStyle = "#FFFFFF";
-      stage.globalAlpha = 1;
-      stage.textAlign = "center";
-      stage.textBaseline = "middle";
-      stage.font = "20px Arial";
-      stage.fillText(msg, puzzleWidth / 2, puzzleHeight - 20);
-    }
+    // function createTitle(msg) {
+    //   stage.fillStyle = "rgb(21 128 61)";
+    //   stage.globalAlpha = 0.4;
+    //   stage.fillRect(100, puzzleHeight - 40, puzzleWidth - 200, 40);
+    //   stage.fillStyle = "#FFFFFF";
+    //   stage.globalAlpha = 1;
+    //   stage.textAlign = "center";
+    //   stage.textBaseline = "middle";
+    //   stage.font = "20px Arial";
+    //   stage.fillText(msg, puzzleWidth / 2, puzzleHeight - 20);
+
+    // }
 
     function buildPieces() {
       let i;
@@ -288,6 +289,8 @@ export default function Home() {
       }
       if (gameWin) {
         setTimeout(gameOver, 500);
+        setIsActive(false);
+      
       }
     }
 
@@ -311,15 +314,62 @@ export default function Home() {
     document.querySelector("#size").oninput = updateSize;
   }, []);
 
+
+  const [seconds, setSeconds] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+
+ 
+
+  function toggle() {
+    setIsActive(!isActive);
+    const time = document.getElementById("timer");
+    time.style.display = "block";
+
+    const startTime = document.getElementById("str");
+    startTime.style.opacity = 0;
+    
+  }
+
+  function reset() {
+    setSeconds(0);
+    setIsActive(false);
+  }
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      interval = setInterval(() => {
+        setSeconds(seconds => seconds + 1);
+      }, 1000);
+    } else if (!isActive && seconds !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isActive, seconds]);
+
+
+
+
+
   return (
     <div className={styles.container}>
       <Head>
         <title>Image Puzzle</title>
+        <link rel="icon" href="/favicon.png" />
       </Head>
-      <div className="flex flex-col justify-center items-center gap-6 pt-10">
+      <div className="flex flex-col justify-center items-center gap-3 pt-10">
         <h1 className="text-3xl font-bold leading-none text-center mb-4">Enter a Number between 2-6</h1>
         <input type={`text`} placeholder={`Enter a number`} className={`py-3 px-8 border border-slate-800 rounded-lg w-[400px]`} id="size" />
         <canvas id="canvas"></canvas>
+
+
+        <div className="relative">
+          <button id="str" className="text-white opacity-100 text-lg font-medium bg-green-700 rounded py-3 px-10 mt-10 border border-green-900" onClick={toggle}>START</button>
+          <div id="timer" className="absolute top-10 hidden left-5 py-3 px-10  bg-slate-400 border-slate-800 w-[100px] text-xl font-bold rounded-lg">
+            {seconds}s
+          </div>
+        </div>
+
       </div>
     </div>
   );
