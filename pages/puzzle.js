@@ -372,7 +372,7 @@ export default function Home() {
       </Head>
       <div className="flex flex-col justify-center items-center gap-3 pt-10">
         <h1
-          className="text-3xl font-bold leading-none text-center mb-4
+          className="sm:text-3xl sm:font-bold sm:leading-none text-center sm:mb-4 text-xl font-bold mb-2
 "
         >
           Enter a Number between 2-6
@@ -380,13 +380,13 @@ export default function Home() {
         <input
           type={`text`}
           placeholder={`Enter a number`}
-          className={`py-3 px-8 border border-slate-800 rounded-lg w-[400px]`}
+          className={`py-3 px-8 border border-slate-800 rounded-lg sm:w-[400px] w-[300px]`}
           id="size"
         />
         <canvas id="canvas"></canvas>
 
         <div className="relative">
-          <div className="flex flex-row justify-center items-center mt-3 gap-3">
+          <div className="flex sm:flex-row flex-col justify-center items-center mt-3 sm:gap-3 gap-2">
             <button
               id="str"
               className="text-white opacity-100 text-lg font-medium bg-green-700 rounded py-3 px-10 border border-green-900"
@@ -406,16 +406,16 @@ export default function Home() {
           </div>
           <div
             id="timer"
-            className="absolute top-3 hidden left-5 py-[14px] px-10  bg-slate-400 border-slate-800 w-[100px] text-xl font-bold rounded-lg"
+            className="absolute top-3 left-20 hidden sm:left-5 py-[14px] px-10  bg-slate-400 border-slate-800 w-[100px] text-xl font-bold rounded-lg"
           >
             {seconds}s
           </div>
         </div>
         <div
           id="prompt"
-          className="absolute hidden text-2xl text-center flex-col gap-4 flex justify-center items-center bg-green-400 w-[900px] h-[300px] rounded-lg border border-slate-700 opacity-100"
+          className="absolute hidden text-2xl text-center flex-col gap-4 justify-center items-center bg-green-400 w-[900px] h-[300px] rounded-lg border border-slate-700 opacity-100"
         >
-          <span className={`font-bold`}> Welcome to The AK's Team </span>{" "}
+          <span className={`font-bold`}> Welcome to The AK&apos;s Team </span>
           <br></br>
           You solved the puzzle in {seconds} seconds
           <button
