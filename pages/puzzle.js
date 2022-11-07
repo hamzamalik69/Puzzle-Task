@@ -26,17 +26,17 @@ export default function Home() {
 
     function randomImg() {
       let arrayImg = [
-        "https://imgv3.fotor.com/images/blog-richtext-image/disaster-girl-meme.jpg",
+        "https://pixabay.com/users/mastersystem60-30356571/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=7546974",
 
-        "https://external-preview.redd.it/GZf1OJHNxY0fxShKsxeDXK0bVrzw5S1QCN_jt2kEkrE.png?format=pjpg&auto=webp&s=36552f92a5caf2f5a920aa3df3ac97947793a717",
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/subway-gf1e5e2566_640.jpg",
 
-        "https://i.seadn.io/gae/dQDxqBW3xILelRihCPrFdUgLHAID9EDTWYwjCNh6Fi28pRX26ripTPxelXkD44KUmS2REHtL9_y2RRw4gWYeR5KdKqh8KoP-wc6aUMA?auto=format&w=1000",
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/copper-teapots-g22c897130_640.jpg",
 
-        "https://a.pinatafarm.com/329x427/8fb12d9451/neck-vein-guy.jpg",
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/horses-g393d50e19_640.jpg",
 
-        "https://nyc3.digitaloceanspaces.com/memecreator-cdn/media/__processed__/cd4/template-is-this-a-pigeon-0c6db91aec9c.jpg",
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/germany-g38931446a_640.jpg",
 
-        "https://i0.wp.com/comicsandmemes.com/wp-content/uploads/blank-meme-template-mike-wazowski-steve-carell.png?resize=639%2C361&ssl=1",
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/namib-desert-g887d8d8e5_640.jpg",
       ];
 
       return arrayImg[parseInt(Math.random() * 5)];
@@ -111,7 +111,7 @@ export default function Home() {
           yPos += pieceHeight;
         }
       }
-      document.onpointerdown = shufflePuzzle;
+      document.getElementById("str").onpointerdown = shufflePuzzle;
     }
 
     function shufflePuzzle() {
@@ -413,7 +413,7 @@ export default function Home() {
         </div>
         <div
           id="prompt"
-          className="absolute hidden text-2xl text-center flex-col gap-4 justify-center items-center bg-green-400 w-[900px] h-[300px] rounded-lg border border-slate-700 opacity-100"
+          className="absolute hidden text-2xl text-center flex-col gap-4 flex justify-center items-center bg-green-400 w-[900px] h-[300px] rounded-lg border border-slate-700 opacity-100"
         >
           <span className={`font-bold`}> Welcome to The AK&apos;s Team </span>
           <br></br>
@@ -421,6 +421,7 @@ export default function Home() {
           <button
             className="bg-red-400 py-3 px-6 rounded-lg border border-red-700 text-base font-bold"
             onClick={() => {
+              localStorage.setItem('timer', seconds)
               Router.reload("/puzzle");
             }}
           >
