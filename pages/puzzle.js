@@ -312,6 +312,8 @@ export default function Home() {
         setTimeout(gameOver, 500);
         setIsActive(false);
         document.getElementById("prompt").classList.toggle("hidden");
+        document.getElementById("prompt").className("flex");
+
       }
     }
 
@@ -380,7 +382,7 @@ export default function Home() {
         <input
           type={`text`}
           placeholder={`Enter a number`}
-          className={`py-3 px-8 border border-slate-800 rounded-lg sm:w-[400px] w-[300px]`}
+          className={`sm:py-3 py-2 sm:px-8 px-5 border border-slate-800 rounded-lg sm:w-[400px] w-[250px]`}
           id="size"
         />
         <canvas id="canvas"></canvas>
@@ -389,14 +391,14 @@ export default function Home() {
           <div className="flex sm:flex-row flex-col justify-center items-center mt-3 sm:gap-3 gap-2">
             <button
               id="str"
-              className="text-white opacity-100 text-lg font-medium bg-green-700 rounded py-3 px-10 border border-green-900"
+              className="text-white opacity-100 sm:text-lg text-xs font-medium bg-green-700 rounded sm:py-3 py-2 sm:px-10 px-6  border border-green-900"
               onClick={toggle}
             >
               START
             </button>
 
             <button
-              className="bg-blue-400 py-[14px] ml-4 px-6 rounded border border-blue-600 text-base font-bold"
+              className="bg-blue-400 sm:py-[14px] py-2 sm:ml-4 sm:px-6 px-3 rounded border border-blue-600 sm:text-base text-xs font-bold"
               onClick={() => {
                 Router.reload("/puzzle");
               }}
@@ -413,13 +415,13 @@ export default function Home() {
         </div>
         <div
           id="prompt"
-          className="absolute hidden text-2xl text-center flex-col gap-4 flex justify-center items-center bg-green-400 w-[900px] h-[300px] rounded-lg border border-slate-700 opacity-100"
+          className="absolute hidden sm:text-xl md:text-2xl pt-2 sm:pt-8 2xl:pt-20 text-sm text-center flex-col  gap-4 justify-center items-center bg-green-400 sm:w-[450px] lg:w-[900px] md:w-[650px] w-[280px] sm:h-[200px] 2xl:h-[300px]  h-[100px] rounded-lg border border-slate-700 opacity-100"
         >
           <span className={`font-bold`}> Welcome to The AK&apos;s Team </span>
           <br></br>
-          You solved the puzzle in {seconds} seconds
+          You solved the puzzle in {seconds} seconds <br></br>
           <button
-            className="bg-red-400 py-3 px-6 rounded-lg border border-red-700 text-base font-bold"
+            className="bg-red-400 sm:py-3 py-2 sm:px-6 px-4 rounded-lg border border-red-700 sm:text-base mt-2 sm:mt-4 text-xs font-bold"
             onClick={() => {
               localStorage.setItem('timer', seconds)
               Router.reload("/puzzle");
