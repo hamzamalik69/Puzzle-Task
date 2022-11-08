@@ -36,7 +36,10 @@ body {
 }
 
 
-
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
 
 .f-f-m {
   font-family: 'Montserrat', sans-serif;
