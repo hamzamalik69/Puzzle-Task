@@ -3,13 +3,17 @@ import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
   const [can, setCan] = useState();
+  const [toaster, setToaster] = useState(false);
+  const notify = () => toast("Welcome to the team");
 
   useEffect(() => {
     const PUZZLE_HOVER_TINT = "#009900";
-    const img = new Image();
+    var img = new Image();
     const canvas = document.querySelector("#canvas");
     const stage = canvas.getContext("2d");
     let size = 1;
@@ -311,8 +315,9 @@ export default function Home() {
       if (gameWin) {
         setTimeout(gameOver, 500);
         setIsActive(false);
-        document.getElementById("prompt").classList.toggle("hidden");
-        document.getElementById("prompt").style.display= "flex";
+        setToaster(true);
+        // document.getElementById("prompt").classList.toggle("hidden");
+        // document.getElementById("prompt").style.display = "flex";
 
       }
     }
@@ -366,12 +371,34 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [isActive, seconds]);
 
+  useEffect(() => {
+    if (toaster === true) {
+      notify();
+    }
+  }, [toaster]);
+
   return (
     <div className={`styles.container`}>
       <Head>
         <title>Image Puzzle</title>
         <link rel="icon" href="/favicon.png" />
       </Head>
+      {toaster && (
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      )}
+
+
       <div className="flex flex-col justify-center items-center gap-3 pt-10">
         <h1
           className="sm:text-3xl sm:font-bold sm:leading-none text-center sm:mb-4 text-xl font-bold mb-2

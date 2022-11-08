@@ -7,22 +7,56 @@
 body {
   font-family: 'Montserrat', sans-serif;
   touch-action: none;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
 }
+
+
+#canvas {
+  touch-action: none;
+}
+.bg-hun {
+ 
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.Toastify__toast-theme--light {
+  background: green !important;
+}
+
+.Toastify__toast-body {
+  color: black;
+  font-weight: 400;
+  font-size: 24px;
+  background: green !important;
+}
+
+
+
 
 .f-f-m {
   font-family: 'Montserrat', sans-serif;
 
 }
-@media (max-width:768px) {
-  #canvas{
-    width: 250px;
-    
-  }
-}
-@media (min-width:768px) {
-  #canvas{
-    width: 600px;
 
+@media (max-width:768px) {
+
+  #canvas {
+    width: 350px;
+    height: 300px;
+    touch-action: none;
   }
+
+
+}
+
+@media (min-width:768px) {
+  #canvas {
+    width: 700px;
+    height: 500px;
+}
 }
