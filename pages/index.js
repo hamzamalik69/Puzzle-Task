@@ -1,157 +1,435 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Router, { useRouter } from "next/router";
 
 export default function Home() {
-  const [num, setNum] = useState(0);
-  const [arr, setArr] = useState([]);
+  const [can, setCan] = useState();
 
-  const dragItem = useRef();
-  const dragOverItem = useRef();
+  useEffect(() => {
+    const PUZZLE_HOVER_TINT = "#009900";
+    const img = new Image();
+    const canvas = document.querySelector("#canvas");
+    const stage = canvas.getContext("2d");
+    let size = 1;
+    let pieces;
+    let piece;
+    let puzzleWidth;
+    let puzzleHeight;
+    let pieceWidth;
+    let pieceHeight;
+    let currentPiece;
+    let currentDropPiece;
+    let mouse;
+    img.addEventListener("load", onImage, false);
 
-  const dragStart = (e, position) => {
-    dragItem.current = position;
-    console.log(e.target.innerHTML);
-  };
+    function randomImg() {
+      let arrayImg = [
+        "https://pixabay.com/users/mastersystem60-30356571/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=7546974",
 
-  const dragEnter = (e, position) => {
-    dragOverItem.current = position;
-    console.log(e.target.innerHTML);
-  };
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/subway-gf1e5e2566_640.jpg",
 
-  const drop = (e) => {
-    const copyListItems = [...arr];
-    const dragItemContent = copyListItems[dragItem.current];
-    copyListItems.splice(dragItem.current, 1);
-    copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-    dragItem.current = null;
-    dragOverItem.current = null;
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/copper-teapots-g22c897130_640.jpg",
 
-    setArr(copyListItems);
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/horses-g393d50e19_640.jpg",
 
-    setTimeout(() => {
-      let welcome = copyListItems.filter((item, index) => {
-        if (item.id !== index + 1) {
-          return;
-        } else {
-          return item;
-        }
-      });
-      if (welcome.length == copyListItems.length) {
-        alert("Welcome to the team");
-      }
-    }, 500);
-  };
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/germany-g38931446a_640.jpg",
 
-  const handleChange = (event) => {
-    setNum(event.target.value);
-    console.log("value is:", event.target.value);
-  };
+        "https://tuk-cdn.s3.amazonaws.com/can-uploader/namib-desert-g887d8d8e5_640.jpg",
+      ];
 
-  const handleClick = (event) => {
-    event.preventDefault();
-    const item = new Array(parseInt(num * num)).fill(0).map((item, idx) => {
-      return {
-        id: idx + 1,
+      return arrayImg[parseInt(Math.random() * 5)];
+    }
+
+    img.src = randomImg();
+
+    function initPuzzle() {
+      pieces = [];
+      mouse = {
+        x: 0,
+        y: 0,
       };
-    });
-    let itemTwo = item
-      .map((number, idx) => {
-        return {
-          id: number.id,
-          sort: Math.random(),
-        };
-      })
-      .sort(function (a, b) {
-        return a.sort - b.sort;
-      });
-    console.log(itemTwo);
-    setArr([...itemTwo]);
+      currentPiece = null;
+      currentDropPiece = null;
+      stage.drawImage(
+        img,
+        0,
+        0,
+        puzzleWidth,
+        puzzleHeight,
+        0,
+        0,
+        puzzleWidth,
+        puzzleHeight
+      );
+      // createTitle("START");
+      buildPieces();
+    }
 
-    console.log(num);
-  };
+    function setCanvas() {
+      canvas.width = puzzleWidth;
+      canvas.height = puzzleHeight;
+      canvas.style.border = "1px solid black";
+    }
+
+    function onImage() {
+      pieceWidth = Math.floor(img.width / size);
+      pieceHeight = Math.floor(img.height / size);
+      puzzleWidth = pieceWidth * size;
+      puzzleHeight = pieceHeight * size;
+      setCanvas();
+      initPuzzle();
+    }
+
+    // function createTitle(msg) {
+    //   stage.fillStyle = "rgb(21 128 61)";
+    //   stage.globalAlpha = 0.4;
+    //   stage.fillRect(100, puzzleHeight - 40, puzzleWidth - 200, 40);
+    //   stage.fillStyle = "#FFFFFF";
+    //   stage.globalAlpha = 1;
+    //   stage.textAlign = "center";
+    //   stage.textBaseline = "middle";
+    //   stage.font = "20px Arial";
+    //   stage.fillText(msg, puzzleWidth / 2, puzzleHeight - 20);
+
+    // }
+
+    function buildPieces() {
+      let i;
+      let piece;
+      let xPos = 0;
+      let yPos = 0;
+      for (i = 0; i < size * size; i++) {
+        piece = {};
+        piece.sx = xPos;
+        piece.sy = yPos;
+        pieces.push(piece);
+        xPos += pieceWidth;
+        if (xPos >= puzzleWidth) {
+          xPos = 0;
+          yPos += pieceHeight;
+        }
+      }
+      document.getElementById("str").onpointerdown = shufflePuzzle;
+    }
+
+    function shufflePuzzle() {
+      pieces = shuffleArray(pieces);
+      stage.clearRect(0, 0, puzzleWidth, puzzleHeight);
+      let xPos = 0;
+      let yPos = 0;
+      for (const piece of pieces) {
+        piece.xPos = xPos;
+        piece.yPos = yPos;
+        stage.drawImage(
+          img,
+          piece.sx,
+          piece.sy,
+          pieceWidth,
+          pieceHeight,
+          xPos,
+          yPos,
+          pieceWidth,
+          pieceHeight
+        );
+        stage.strokeRect(xPos, yPos, pieceWidth, pieceHeight);
+        xPos += pieceWidth;
+        if (xPos >= puzzleWidth) {
+          xPos = 0;
+          yPos += pieceHeight;
+        }
+      }
+      document.onpointerdown = onPuzzleClick;
+    }
+
+    function checkPieceClicked() {
+      for (const piece of pieces) {
+        if (
+          mouse.x < piece.xPos ||
+          mouse.x > piece.xPos + pieceWidth ||
+          mouse.y < piece.yPos ||
+          mouse.y > piece.yPos + pieceHeight
+        ) {
+          //PIECE NOT HIT
+        } else {
+          return piece;
+        }
+      }
+      return null;
+    }
+
+    function updatePuzzle(e) {
+      currentDropPiece = null;
+      if (e.layerX || e.layerX == 0) {
+        mouse.x = e.layerX - canvas.offsetLeft;
+        mouse.y = e.layerY - canvas.offsetTop;
+      } else if (e.offsetX || e.offsetX == 0) {
+        mouse.x = e.offsetX - canvas.offsetLeft;
+        mouse.y = e.offsetY - canvas.offsetTop;
+      }
+      stage.clearRect(0, 0, puzzleWidth, puzzleHeight);
+      for (const piece of pieces) {
+        if (piece == currentPiece) {
+          continue;
+        }
+        stage.drawImage(
+          img,
+          piece.sx,
+          piece.sy,
+          pieceWidth,
+          pieceHeight,
+          piece.xPos,
+          piece.yPos,
+          pieceWidth,
+          pieceHeight
+        );
+        stage.strokeRect(piece.xPos, piece.yPos, pieceWidth, pieceHeight);
+        if (currentDropPiece == null) {
+          if (
+            mouse.x < piece.xPos ||
+            mouse.x > piece.xPos + pieceWidth ||
+            mouse.y < piece.yPos ||
+            mouse.y > piece.yPos + pieceHeight
+          ) {
+            //NOT OVER
+          } else {
+            currentDropPiece = piece;
+            stage.save();
+            stage.globalAlpha = 0.4;
+            stage.fillStyle = PUZZLE_HOVER_TINT;
+            stage.fillRect(
+              currentDropPiece.xPos,
+              currentDropPiece.yPos,
+              pieceWidth,
+              pieceHeight
+            );
+            stage.restore();
+          }
+        }
+      }
+      stage.save();
+      stage.globalAlpha = 0.6;
+      stage.drawImage(
+        img,
+        currentPiece.sx,
+        currentPiece.sy,
+        pieceWidth,
+        pieceHeight,
+        mouse.x - pieceWidth / 2,
+        mouse.y - pieceHeight / 2,
+        pieceWidth,
+        pieceHeight
+      );
+      stage.restore();
+      stage.strokeRect(
+        mouse.x - pieceWidth / 2,
+        mouse.y - pieceHeight / 2,
+        pieceWidth,
+        pieceHeight
+      );
+    }
+
+    function onPuzzleClick(e) {
+      if (e.layerX || e.layerX === 0) {
+        mouse.x = e.layerX - canvas.offsetLeft;
+        mouse.y = e.layerY - canvas.offsetTop;
+      } else if (e.offsetX || e.offsetX === 0) {
+        mouse.x = e.offsetX - canvas.offsetLeft;
+        mouse.y = e.offsetY - canvas.offsetTop;
+      }
+      currentPiece = checkPieceClicked();
+      if (currentPiece !== null) {
+        stage.clearRect(
+          currentPiece.xPos,
+          currentPiece.yPos,
+          pieceWidth,
+          pieceHeight
+        );
+        stage.save();
+        stage.globalAlpha = 0.9;
+        stage.drawImage(
+          img,
+          currentPiece.sx,
+          currentPiece.sy,
+          pieceWidth,
+          pieceHeight,
+          mouse.x - pieceWidth / 2,
+          mouse.y - pieceHeight / 2,
+          pieceWidth,
+          pieceHeight
+        );
+        stage.restore();
+        document.onpointermove = updatePuzzle;
+        document.onpointerup = pieceDropped;
+      }
+    }
+
+    function gameOver() {
+      document.onpointerdown = null;
+      document.onpointermove = null;
+      document.onpointerup = null;
+      initPuzzle();
+    }
+
+    function pieceDropped(e) {
+      document.onpointermove = null;
+      document.onpointerup = null;
+      if (currentDropPiece !== null) {
+        let tmp = {
+          xPos: currentPiece.xPos,
+          yPos: currentPiece.yPos,
+        };
+        currentPiece.xPos = currentDropPiece.xPos;
+        currentPiece.yPos = currentDropPiece.yPos;
+        currentDropPiece.xPos = tmp.xPos;
+        currentDropPiece.yPos = tmp.yPos;
+      }
+      resetPuzzleAndCheckWin();
+    }
+
+    function resetPuzzleAndCheckWin() {
+      stage.clearRect(0, 0, puzzleWidth, puzzleHeight);
+      let gameWin = true;
+      for (piece of pieces) {
+        stage.drawImage(
+          img,
+          piece.sx,
+          piece.sy,
+          pieceWidth,
+          pieceHeight,
+          piece.xPos,
+          piece.yPos,
+          pieceWidth,
+          pieceHeight
+        );
+        stage.strokeRect(piece.xPos, piece.yPos, pieceWidth, pieceHeight);
+        if (piece.xPos != piece.sx || piece.yPos != piece.sy) {
+          gameWin = false;
+        }
+      }
+      if (gameWin) {
+        setTimeout(gameOver, 500);
+        setIsActive(false);
+        document.getElementById("prompt").classList.toggle("hidden");
+        document.getElementById("prompt").style.display= "flex";
+
+      }
+    }
+
+    function shuffleArray(o) {
+      for (
+        var j, x, i = o.length;
+        i;
+        j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x
+      );
+      return o;
+    }
+
+    function updateSize(e) {
+      size = e.target.value;
+      pieceWidth = Math.floor(img.width / size);
+      pieceHeight = Math.floor(img.height / size);
+      puzzleWidth = pieceWidth * size;
+      puzzleHeight = pieceHeight * size;
+      gameOver();
+    }
+    document.querySelector("#size").oninput = updateSize;
+  }, []);
+
+  const [seconds, setSeconds] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+
+  function toggle() {
+    setIsActive(!isActive);
+    const time = document.getElementById("timer");
+    time.style.display = "block";
+
+    const startTime = document.getElementById("str");
+    startTime.style.opacity = 0;
+  }
+
+  function reset() {
+    setSeconds(0);
+    setIsActive(false);
+  }
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      interval = setInterval(() => {
+        setSeconds((seconds) => seconds + 1);
+      }, 1000);
+    } else if (!isActive && seconds !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isActive, seconds]);
 
   return (
-    <div className={styles.container}>
+    <div className={`styles.container`}>
       <Head>
-        <title>Puzzle App</title>
-        <meta name="description" content="Generated by create next app" />
+        <title>Image Puzzle</title>
         <link rel="icon" href="/favicon.png" />
       </Head>
-
-      {/* <div className="App pt-10 text-center flex flex-col justify-center items-center">
-        <input
-          type="text"
-          value={`Create My Puzzle`}
-          className="py-4 px-10 border border-slate-300 rounded-lg mb-4"
-          ref={inputRef}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <input
-          type="button"
-          value="Load my Puzzle"
-          className="py-4 px-10 rounded-lg bordre border-slate-500 bg-slate-900 text-white ml-4 mb-6"
-          onClick={(e) => setRedraw(!redraw)}
-        />
-        <canvas id="canvas" ref={canvasRef}></canvas>
-      </div> */}
-      <div className="flex w-[57%] justify-between float-right items-center">
-        <h1 className="text-4xl font-bold leading-none py-10 text-center">
-          Grid Puzzle
+      <div className="flex flex-col justify-center items-center gap-3 pt-10">
+        <h1
+          className="sm:text-3xl sm:font-bold sm:leading-none text-center sm:mb-4 text-xl font-bold mb-2
+"
+        >
+          Enter a Number between 2-6
         </h1>
-        <div className="float-right">
-
-          <Link href={`/puzzle`}>
-            <button className="relative py-3 pr-6 rounded-lg bg-green-400 text-black border border-green-500 w-[200px] float-right">Next Puzzle</button>
-            <img src="./assets/next.png" className="w-[20px] h-[20px] absolute right-[53px] top-[3rem]" />
-          </Link>
-        </div>
-
-      </div>
-      <form
-        onSubmit={(e) => {
-          handleClick(e);
-        }}
-        className="w-full flex flex-row gap-4 justify-center items-center p-10 border border-slate-300 rounded-lg bg-slate-50"
-      >
-        <p className="text-xl font-medium leading-none text-slate-900">
-          Enter the required grid length:
-        </p>
         <input
           type={`text`}
-          onChange={(e) => setNum(e.target.value)}
-          id="num"
-          className="py-2 px-4 w-[400px] rounded-lg border border-slate-300"
-          placeholder="Enter a number"
+          placeholder={`Enter a number`}
+          className={`sm:py-3 py-2 sm:px-8 px-5 border border-slate-800 rounded-lg sm:w-[400px] w-[250px]`}
+          id="size"
         />
-        <button
-          type="submit"
-          className="bg-blue-700 text-white py-2 px-6 rounded-lg f-f-m"
+        <canvas id="canvas"></canvas>
+
+        <div className="relative">
+          <div className="flex sm:flex-row flex-col justify-center items-center mt-3 sm:gap-3 gap-2">
+            <button
+              id="str"
+              className="text-white opacity-100 sm:text-lg text-xs font-medium bg-green-700 rounded sm:py-3 py-2 sm:px-10 px-6  border border-green-900"
+              onClick={toggle}
+            >
+              START
+            </button>
+
+            <button
+              className="bg-blue-400 sm:py-[14px] py-2 sm:ml-4 sm:px-6 px-3 rounded border border-blue-600 sm:text-base text-xs font-bold"
+              onClick={() => {
+                Router.reload("/puzzle");
+              }}
+            >
+              Try a different Picture
+            </button>
+          </div>
+          <div
+            id="timer"
+            className="absolute top-3 sm:top-3 left-12 hidden sm:left-5 sm:py-3 py-2 sm:px-10 px-6 bg-slate-400 border-slate-800 sm:text-lg text-xs font-medium rounded-lg"
+          >
+            {seconds}s
+          </div>
+        </div>
+        <div
+          id="prompt"
+          className="absolute hidden sm:text-xl md:text-2xl pt-2 sm:pt-8 text-sm text-center flex-col 2xl:gap-4 justify-center items-center bg-green-400 sm:w-[450px] lg:w-[900px] md:w-[650px] w-[280px] sm:h-[200px] md:h-[280px] 2xl:h-[400px]  h-[200px] rounded-lg border border-slate-700 opacity-100"
         >
-          Enter
-        </button>
-      </form>
-      <div
-        style={{ gridTemplateColumns: `repeat(${num},minmax(0,1fr))` }}
-        className={`grid`}
-      >
-        {arr &&
-          arr.map((item, idx) => {
-            return (
-              <div
-                draggable="true"
-                className="cursor-move py-16 gap-3 text-center mt-10 mr-4 text
-                -2xl font-bold bg-slate-200 rounded border border-slate-600"
-                onDragStart={(e) => dragStart(e, idx)}
-                onDragEnter={(e) => dragEnter(e, idx)}
-                onDragEnd={drop}
-                key={idx}
-              >
-                {item.id}
-              </div>
-            );
-          })}
+          <span className={`font-bold`}> Welcome to The AK&apos;s Team </span>
+          <br></br>
+          You solved the puzzle in {seconds} seconds <br></br>
+          <button
+            className="bg-red-400 sm:py-3 py-2 sm:px-6 px-4 rounded-lg border border-red-700 sm:text-base mt-2 sm:mt-4 text-xs font-bold"
+            onClick={() => {
+              localStorage.setItem('timer', seconds)
+              Router.reload("/puzzle");
+            }}
+          >
+            Play Again
+          </button>
+        </div>
       </div>
     </div>
   );
