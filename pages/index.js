@@ -157,9 +157,9 @@ export default function Home() {
 
     function updatePuzzle(e) {
       currentDropPiece = null;
-      if (e.layerX || e.layerX == 0) {
-        mouse.x = e.layerX - canvas.offsetLeft;
-        mouse.y = e.layerY - canvas.offsetTop;
+      if (e.clientX || e.clientX == 0) {
+        mouse.x = e.clientX - canvas.offsetLeft;
+        mouse.y = e.clientY - canvas.offsetTop;
       } else if (e.offsetX || e.offsetX == 0) {
         mouse.x = e.offsetX - canvas.offsetLeft;
         mouse.y = e.offsetY - canvas.offsetTop;
@@ -227,9 +227,9 @@ export default function Home() {
     }
 
     function onPuzzleClick(e) {
-      if (e.layerX || e.layerX === 0) {
-        mouse.x = e.layerX - canvas.offsetLeft;
-        mouse.y = e.layerY - canvas.offsetTop;
+      if (e.clientX || e.clientX === 0) {
+        mouse.x = e.clientX - canvas.offsetLeft;
+        mouse.y = e.clientY - canvas.offsetTop;
       } else if (e.offsetX || e.offsetX === 0) {
         mouse.x = e.offsetX - canvas.offsetLeft;
         mouse.y = e.offsetY - canvas.offsetTop;
