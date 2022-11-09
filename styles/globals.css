@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
-  touch-action: none;
+
   background-size: cover;
   background-repeat: no-repeat;
   -webkit-font-smoothing: antialiased;
@@ -45,21 +45,18 @@ code {
   font-family: 'Montserrat', sans-serif;
 
 }
-
-@media (max-width:768px) {
-
+@media (max-width: 768px) {
   #canvas {
-    width: 350px;
-    height: 300px;
-    touch-action: none;
+      width: 350px;
+      height: 300px;
+      touch-action: none;
   }
-
-
 }
 
-@media (min-width:768px) {
+@media (min-width: 768px) {
   #canvas {
-    width: 700px;
-    height: 500px;
+      width: 700px;
+      height: 500px;
+  }
 }
-}
+

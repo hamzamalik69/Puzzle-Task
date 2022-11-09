@@ -5,11 +5,15 @@ import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useReward } from "react-rewards";
 
 export default function Home() {
+  const { reward: confettiReward, isAnimating: isConfettiAnimating } =
+    useReward("confettiReward", "confetti");
   const [can, setCan] = useState();
   const [toaster, setToaster] = useState(false);
   const notify = () => toast("Welcome to the team");
+  const [welcomeConfitte, setWelcomeConfitte] = useState(false);
 
   useEffect(() => {
     const PUZZLE_HOVER_TINT = "#009900";
@@ -78,7 +82,9 @@ export default function Home() {
     }
 
     function onImage() {
-      pieceWidth = Math.floor(img.width / size);
+      pieceWidth = window.matchMedia("(max-width: 768px)").matches
+        ? Math.floor(370 / size)
+        : Math.floor(img.width / size);
       pieceHeight = Math.floor(img.height / size);
       puzzleWidth = pieceWidth * size;
       puzzleHeight = pieceHeight * size;
@@ -316,9 +322,9 @@ export default function Home() {
         setTimeout(gameOver, 500);
         setIsActive(false);
         setToaster(true);
+        setWelcomeConfitte(true);
         // document.getElementById("prompt").classList.toggle("hidden");
         // document.getElementById("prompt").style.display = "flex";
-
       }
     }
 
@@ -377,6 +383,15 @@ export default function Home() {
     }
   }, [toaster]);
 
+  useEffect(() => {
+    if (welcomeConfitte === true) {
+      confettiReward();
+      setTimeout(() => {
+        setToaster(true);
+      }, 500);
+    }
+  }, [welcomeConfitte]);
+
   return (
     <div className={`styles.container`}>
       <Head>
@@ -397,7 +412,6 @@ export default function Home() {
           theme="colored"
         />
       )}
-
 
       <div className="flex flex-col justify-center items-center gap-3 pt-10">
         <h1
@@ -440,6 +454,10 @@ export default function Home() {
             {seconds}s
           </div>
         </div>
+        <span
+          id="confettiReward"
+          className="z-40 flex justify-center items-center"
+        />
         <div
           id="prompt"
           className="absolute hidden sm:text-xl md:text-2xl pt-2 sm:pt-8 text-sm text-center flex-col 2xl:gap-4 justify-center items-center bg-green-400 sm:w-[450px] lg:w-[900px] md:w-[650px] w-[280px] sm:h-[200px] md:h-[280px] 2xl:h-[400px]  h-[200px] rounded-lg border border-slate-700 opacity-100"
@@ -450,7 +468,7 @@ export default function Home() {
           <button
             className="bg-red-400 hover:bg-red-500 sm:py-3 py-2 sm:px-6 px-4 rounded-lg border border-red-700 sm:text-base mt-2 sm:mt-4 text-xs font-bold"
             onClick={() => {
-              localStorage.setItem('timer', seconds)
+              localStorage.setItem("timer", seconds);
               Router.reload("/puzzle");
             }}
           >
