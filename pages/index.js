@@ -418,14 +418,14 @@ export default function Home() {
           <div className="flex sm:flex-row flex-col justify-center items-center mt-3 sm:gap-3 gap-2">
             <button
               id="str"
-              className="text-white opacity-100 sm:text-lg text-xs font-medium bg-green-700 rounded sm:py-3 py-2 sm:px-10 px-6  border border-green-900"
+              className="text-white opacity-100 sm:text-lg text-xs font-medium bg-green-700 hover:bg-green-900 rounded sm:py-3 py-2 sm:px-10 px-6  border border-green-900"
               onClick={toggle}
             >
               START
             </button>
 
             <button
-              className="bg-blue-400 sm:py-[14px] py-2 sm:ml-4 sm:px-6 px-3 rounded border border-blue-600 sm:text-base text-xs font-bold"
+              className="bg-blue-600 hover:bg-blue-800 sm:py-[14px] py-2 sm:ml-4 sm:px-6 px-3 rounded border border-blue-600 sm:text-base text-xs font-bold"
               onClick={() => {
                 Router.reload("/puzzle");
               }}
@@ -448,7 +448,7 @@ export default function Home() {
           <br></br>
           You solved the puzzle in {seconds} seconds <br></br>
           <button
-            className="bg-red-400 sm:py-3 py-2 sm:px-6 px-4 rounded-lg border border-red-700 sm:text-base mt-2 sm:mt-4 text-xs font-bold"
+            className="bg-red-400 hover:bg-red-500 sm:py-3 py-2 sm:px-6 px-4 rounded-lg border border-red-700 sm:text-base mt-2 sm:mt-4 text-xs font-bold"
             onClick={() => {
               localStorage.setItem('timer', seconds)
               Router.reload("/puzzle");
