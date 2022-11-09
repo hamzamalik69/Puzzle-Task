@@ -16,7 +16,7 @@ export default function Home() {
   const [welcomeConfitte, setWelcomeConfitte] = useState(false);
 
   useEffect(() => {
-    const PUZZLE_HOVER_TINT = "#009900";
+    const PUZZLE_HOVER_TINT = "#000000";
     var img = new Image();
     const canvas = document.querySelector("#canvas");
     const stage = canvas.getContext("2d");
@@ -51,6 +51,7 @@ export default function Home() {
     }
 
     img.src = randomImg();
+    // img.src = './copper-teapots-g22c897130_640.jpg'
 
     function initPuzzle() {
       pieces = [];
@@ -82,28 +83,13 @@ export default function Home() {
     }
 
     function onImage() {
-      pieceWidth = window.matchMedia("(max-width: 768px)").matches
-        ? Math.floor(370 / size)
-        : Math.floor(img.width / size);
+      pieceWidth = Math.floor(img.width / size);
       pieceHeight = Math.floor(img.height / size);
       puzzleWidth = pieceWidth * size;
       puzzleHeight = pieceHeight * size;
       setCanvas();
       initPuzzle();
     }
-
-    // function createTitle(msg) {
-    //   stage.fillStyle = "rgb(21 128 61)";
-    //   stage.globalAlpha = 0.4;
-    //   stage.fillRect(100, puzzleHeight - 40, puzzleWidth - 200, 40);
-    //   stage.fillStyle = "#FFFFFF";
-    //   stage.globalAlpha = 1;
-    //   stage.textAlign = "center";
-    //   stage.textBaseline = "middle";
-    //   stage.font = "20px Arial";
-    //   stage.fillText(msg, puzzleWidth / 2, puzzleHeight - 20);
-
-    // }
 
     function buildPieces() {
       let i;
